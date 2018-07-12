@@ -1,0 +1,52 @@
+<html>
+<head>
+<title>表单测试</title>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+        var sock = null;
+        var wsuri = "ws://127.0.0.1:8088/ws";
+
+        window.onload = function() {
+
+            console.log("onload");
+
+            sock = new WebSocket(wsuri);
+
+            sock.onopen = function() {
+                console.log("connected to " + wsuri);
+            }
+
+            sock.onclose = function(e) {
+                console.log("connection closed (" + e.code + ")");
+            }
+
+            sock.onmessage = function(e) {
+                console.log("message received: " + e.data);
+				$("#echo_msg div").append(e.data + "<br>");
+                // 滚动条滚动到最低部
+               $("#echo_msg").scrollTop($("#echo_msg div").height() - $("#echo_msg").height());
+            }
+        };
+
+        function send() {
+            var msg = document.getElementById('cmd').value;
+            sock.send(msg);
+        };
+ </script>
+
+
+
+<form >
+    <p>
+    command:<input type="text" id="cmd" value="ping 127.0.0.1">
+	</p>
+</form>
+<button onclick="send();">run</button>
+<p></p>
+<div id="echo_msg" style="height: 450px; width:600px; overflow-y: scroll; overflow-x:scroll; background: #333; color: #aaa; padding: 10px;">
+<div>
+
+</body>
+</html>
